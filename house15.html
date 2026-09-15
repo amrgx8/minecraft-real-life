@@ -1,0 +1,3191 @@
+```html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+
+<title>Minecraft in Real Life</title>
+<meta name="description" content="Minecraft in Real Life - صمم مساحتك ثلاثية الأبعاد وتجول داخل تصميمك.">
+<meta name="theme-color" content="#101827">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23101827'/%3E%3Crect x='14' y='18' width='72' height='64' rx='8' fill='%234ade80'/%3E%3Cpath d='M14 49h72v33H14z' fill='%2322c55e'/%3E%3Cpath d='M14 48l20-16 15 13 16-15 21 18' fill='none' stroke='%23166534' stroke-width='6'/%3E%3Crect x='39' y='54' width='22' height='28' fill='%237c2d12'/%3E%3Ccircle cx='34' cy='41' r='5' fill='white'/%3E%3Ccircle cx='66' cy='41' r='5' fill='white'/%3E%3C/svg%3E">
+
+<style>
+*{
+ box-sizing:border-box;
+ margin:0;
+ padding:0;
+ -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+ width:100%;
+ height:100%;
+ overflow:hidden;
+ background:#080d16;
+ color:#fff;
+ font-family:Tahoma,Arial,sans-serif;
+}
+
+body{
+ touch-action:none;
+}
+
+button,input,select{
+ font-family:inherit;
+}
+
+/* START */
+
+#startScreen{
+ position:fixed;
+ inset:0;
+ z-index:9999;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ overflow:hidden;
+ background:
+ radial-gradient(circle at 50% 20%,rgba(74,222,128,.14),transparent 35%),
+ linear-gradient(135deg,#05080f,#101827 55%,#07110d);
+}
+
+.startGlow{
+ position:absolute;
+ width:500px;
+ height:500px;
+ border-radius:50%;
+ background:rgba(74,222,128,.08);
+ filter:blur(70px);
+ animation:glow 5s infinite alternate;
+}
+
+@keyframes glow{
+ from{transform:scale(.8);opacity:.5}
+ to{transform:scale(1.2);opacity:1}
+}
+
+.startCard{
+ position:relative;
+ width:min(92%,620px);
+ padding:48px 35px;
+ text-align:center;
+ border:1px solid rgba(255,255,255,.12);
+ border-radius:30px;
+ background:rgba(15,23,42,.8);
+ backdrop-filter:blur(25px);
+ box-shadow:0 30px 100px rgba(0,0,0,.55);
+}
+
+.logo{
+ width:115px;
+ height:115px;
+ margin:auto auto 22px;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ border-radius:30px;
+ font-size:62px;
+ background:linear-gradient(145deg,#4ade80,#16a34a);
+ box-shadow:0 20px 50px rgba(34,197,94,.25);
+}
+
+.startCard h1{
+ font-size:clamp(30px,6vw,52px);
+ margin-bottom:12px;
+}
+
+.startCard h1 span{
+ color:#4ade80;
+}
+
+.startCard p{
+ color:#b7c2d3;
+ line-height:1.9;
+ margin-bottom:28px;
+}
+
+.startButton{
+ border:0;
+ border-radius:15px;
+ padding:16px 42px;
+ font-size:18px;
+ font-weight:bold;
+ color:#07110d;
+ background:linear-gradient(135deg,#4ade80,#22c55e);
+ cursor:pointer;
+ box-shadow:0 12px 35px rgba(34,197,94,.25);
+}
+
+#loadingScreen{
+ position:fixed;
+ inset:0;
+ z-index:9998;
+ display:none;
+ align-items:center;
+ justify-content:center;
+ background:#080d16;
+}
+
+.loader{
+ width:62px;
+ height:62px;
+ margin:auto auto 20px;
+ border:5px solid rgba(255,255,255,.12);
+ border-top-color:#4ade80;
+ border-radius:50%;
+ animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+ to{transform:rotate(360deg)}
+}
+
+/* APP */
+
+#app{
+ position:fixed;
+ inset:0;
+ display:none;
+ overflow:hidden;
+}
+
+#stage{
+ position:absolute;
+ inset:0;
+ overflow:hidden;
+}
+
+#canvasWrap{
+ position:absolute;
+ inset:0;
+ overflow:hidden;
+}
+
+#canvasWrap canvas{
+ display:block;
+ width:100%!important;
+ height:100%!important;
+}
+
+/* TOP */
+
+.topbar{
+ position:absolute;
+ z-index:100;
+ top:12px;
+ left:12px;
+ right:12px;
+ height:58px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ padding:8px 12px;
+ border:1px solid rgba(255,255,255,.1);
+ border-radius:16px;
+ background:rgba(8,13,22,.84);
+ backdrop-filter:blur(18px);
+ box-shadow:0 10px 30px rgba(0,0,0,.25);
+}
+
+.brand{
+ display:flex;
+ align-items:center;
+ gap:10px;
+ font-weight:bold;
+}
+
+.brandIcon{
+ width:38px;
+ height:38px;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ border-radius:10px;
+ background:#22c55e;
+}
+
+.brand span{
+ color:#4ade80;
+}
+
+.topActions{
+ display:flex;
+ gap:7px;
+}
+
+.toolBtn{
+ border:1px solid rgba(255,255,255,.1);
+ color:#fff;
+ background:#172033;
+ padding:9px 12px;
+ border-radius:10px;
+ cursor:pointer;
+}
+
+.toolBtn:hover{
+ background:#22304a;
+}
+
+/* PANELS */
+
+.sidePanel{
+ position:absolute;
+ z-index:150;
+ top:82px;
+ bottom:75px;
+ width:300px;
+ max-width:calc(100vw - 30px);
+ overflow:hidden;
+ background:rgba(9,15,27,.95);
+ border:1px solid rgba(255,255,255,.1);
+ backdrop-filter:blur(20px);
+ box-shadow:0 20px 50px rgba(0,0,0,.35);
+ transition:transform .25s ease;
+}
+
+.leftPanel{
+ left:12px;
+ border-radius:16px;
+}
+
+.rightPanel{
+ right:12px;
+ border-radius:16px;
+}
+
+.leftPanel.hidden{
+ transform:translateX(calc(-100% - 25px));
+}
+
+.rightPanel.hidden{
+ transform:translateX(calc(100% + 25px));
+}
+
+.panelHeader{
+ height:55px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ padding:0 15px;
+ border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.panelHeader h2{
+ font-size:16px;
+}
+
+.panelBody{
+ height:calc(100% - 55px);
+ overflow:auto;
+ padding:12px;
+}
+
+.panelBody::-webkit-scrollbar{
+ width:5px;
+}
+
+.panelBody::-webkit-scrollbar-thumb{
+ background:#334155;
+ border-radius:10px;
+}
+
+.panelToggle{
+ position:absolute;
+ z-index:170;
+ top:145px;
+ width:32px;
+ height:65px;
+ border:1px solid rgba(255,255,255,.12);
+ background:rgba(9,15,27,.95);
+ color:#fff;
+ cursor:pointer;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-size:18px;
+}
+
+.leftToggle{
+ left:0;
+ border-radius:0 10px 10px 0;
+}
+
+.rightToggle{
+ right:0;
+ border-radius:10px 0 0 10px;
+}
+
+/* LIBRARY */
+
+.sectionTitle{
+ color:#94a3b8;
+ font-size:12px;
+ margin:10px 2px;
+}
+
+.libraryGrid{
+ display:grid;
+ grid-template-columns:repeat(2,1fr);
+ gap:8px;
+}
+
+.item{
+ border:1px solid rgba(255,255,255,.08);
+ border-radius:12px;
+ padding:12px 8px;
+ background:#111a2b;
+ color:#fff;
+ cursor:pointer;
+ text-align:center;
+ transition:.15s;
+}
+
+.item:hover{
+ background:#1b2941;
+ transform:translateY(-2px);
+}
+
+.itemIcon{
+ font-size:28px;
+ display:block;
+ margin-bottom:6px;
+}
+
+.itemName{
+ font-size:12px;
+}
+
+/* PROPERTIES */
+
+.propGroup{
+ margin-bottom:16px;
+}
+
+.propGroup label{
+ display:block;
+ color:#94a3b8;
+ font-size:12px;
+ margin-bottom:7px;
+}
+
+input,select{
+ width:100%;
+ border:1px solid rgba(255,255,255,.1);
+ border-radius:9px;
+ background:#111a2b;
+ color:#fff;
+ padding:10px;
+ outline:none;
+}
+
+.row{
+ display:grid;
+ grid-template-columns:repeat(2,1fr);
+ gap:8px;
+}
+
+.controlBtn{
+ width:100%;
+ border:1px solid rgba(255,255,255,.1);
+ border-radius:9px;
+ padding:10px 5px;
+ background:#162238;
+ color:#fff;
+ cursor:pointer;
+}
+
+.controlBtn:hover{
+ background:#22304a;
+}
+
+.danger{
+ background:#3a1720;
+}
+
+.infoBox{
+ padding:12px;
+ border-radius:12px;
+ background:#111a2b;
+ color:#94a3b8;
+ font-size:12px;
+ line-height:1.8;
+}
+
+/* BOTTOM */
+
+.bottomBar{
+ position:absolute;
+ z-index:160;
+ bottom:10px;
+ left:50%;
+ transform:translateX(-50%);
+ width:min(95%,1000px);
+ min-height:55px;
+ padding:8px;
+ display:flex;
+ justify-content:center;
+ gap:7px;
+ flex-wrap:wrap;
+ border:1px solid rgba(255,255,255,.1);
+ border-radius:16px;
+ background:rgba(8,13,22,.88);
+ backdrop-filter:blur(18px);
+}
+
+.bottomBtn{
+ border:1px solid rgba(255,255,255,.08);
+ background:#172033;
+ color:#fff;
+ border-radius:10px;
+ padding:9px 13px;
+ cursor:pointer;
+}
+
+.modeBadge{
+ position:absolute;
+ z-index:120;
+ top:82px;
+ left:50%;
+ transform:translateX(-50%);
+ padding:8px 15px;
+ border-radius:20px;
+ background:rgba(8,13,22,.82);
+ border:1px solid rgba(255,255,255,.1);
+ color:#4ade80;
+ font-size:12px;
+ pointer-events:none;
+}
+
+.crosshair{
+ position:absolute;
+ z-index:110;
+ left:50%;
+ top:50%;
+ width:18px;
+ height:18px;
+ transform:translate(-50%,-50%);
+ pointer-events:none;
+ display:none;
+}
+
+.crosshair:before,
+.crosshair:after{
+ content:"";
+ position:absolute;
+ background:#fff;
+ opacity:.85;
+}
+
+.crosshair:before{
+ width:18px;
+ height:2px;
+ top:8px;
+}
+
+.crosshair:after{
+ width:2px;
+ height:18px;
+ left:8px;
+}
+
+#toast{
+ position:fixed;
+ z-index:10000;
+ bottom:90px;
+ left:50%;
+ transform:translateX(-50%) translateY(20px);
+ padding:11px 18px;
+ border-radius:12px;
+ background:#111827;
+ border:1px solid rgba(255,255,255,.12);
+ opacity:0;
+ pointer-events:none;
+ transition:.25s;
+ white-space:nowrap;
+}
+
+#toast.show{
+ opacity:1;
+ transform:translateX(-50%) translateY(0);
+}
+
+.footer{
+ position:absolute;
+ z-index:90;
+ left:15px;
+ bottom:82px;
+ color:rgba(255,255,255,.45);
+ font-size:11px;
+ pointer-events:none;
+}
+
+/* MOBILE */
+
+@media(max-width:800px){
+
+ .topbar{
+  top:7px;
+  left:7px;
+  right:7px;
+  height:50px;
+ }
+
+ .brandText{
+  display:none;
+ }
+
+ .sidePanel{
+  top:66px;
+  bottom:68px;
+  width:270px;
+ }
+
+ .bottomBar{
+  bottom:6px;
+  width:calc(100% - 12px);
+ }
+
+ .bottomBtn{
+  padding:8px 9px;
+  font-size:11px;
+ }
+
+ .footer{
+  display:none;
+ }
+}
+
+@media(max-width:480px){
+
+ .leftPanel,.rightPanel{
+  width:calc(100vw - 45px);
+ }
+
+ .libraryGrid{
+  grid-template-columns:repeat(3,1fr);
+ }
+
+ .item{
+  padding:9px 4px;
+ }
+
+ .itemIcon{
+  font-size:22px;
+ }
+
+ .itemName{
+  font-size:10px;
+ }
+}
+</style>
+</head>
+
+<body>
+
+<div id="startScreen">
+ <div class="startGlow"></div>
+
+ <div class="startCard">
+  <div class="logo">🌍</div>
+
+  <h1>Minecraft <span>in Real Life</span></h1>
+
+  <p>
+   صمم مساحتك الخاصة ثلاثية الأبعاد،
+   أضف الأثاث وعدّل كل التفاصيل ثم تجول داخل التصميم.
+  </p>
+
+  <button class="startButton" onclick="startApp()">
+   🚀 ابدأ التجربة
+  </button>
+ </div>
+</div>
+
+<div id="loadingScreen">
+ <div style="text-align:center">
+  <div class="loader"></div>
+  <div>جاري تجهيز عالمك...</div>
+ </div>
+</div>
+
+<div id="app">
+
+ <div id="stage">
+  <div id="canvasWrap"></div>
+ </div>
+
+ <div class="topbar">
+
+  <div class="brand">
+   <div class="brandIcon">🌍</div>
+   <div class="brandText">
+    Minecraft <span>in Real Life</span>
+   </div>
+  </div>
+
+  <div class="topActions">
+   <button class="toolBtn" onclick="toggleLeft()">☰</button>
+   <button class="toolBtn" onclick="toggleRight()">⚙️</button>
+   <button class="toolBtn" onclick="toggleCeiling()">🏠</button>
+  </div>
+
+ </div>
+
+ <div class="modeBadge" id="modeBadge">
+  🎨 وضع التصميم
+ </div>
+
+ <div class="crosshair" id="crosshair"></div>
+
+ <!-- LEFT -->
+
+ <aside class="sidePanel leftPanel" id="leftPanel">
+
+  <div class="panelHeader">
+   <h2>🧱 مكتبة الأثاث</h2>
+   <button class="controlBtn" style="width:auto;padding:6px 10px" onclick="toggleLeft()">✕</button>
+  </div>
+
+  <div class="panelBody">
+
+   <div class="sectionTitle">غرف</div>
+
+   <div class="libraryGrid">
+
+    <button class="item" onclick="addFurniture('bed')">
+     <span class="itemIcon">🛏️</span>
+     <span class="itemName">سرير</span>
+    </button>
+
+    <button class="item" onclick="addFurniture('sofa')">
+     <span class="itemIcon">🛋️</span>
+     <span class="itemName">كنبة</span>
+    </button>
+
+    <button class="item" onclick="addFurniture('table')">
+     <span class="itemIcon">🪑</span>
+     <span class="itemName">طاولة</span>
+    </button>
+
+    <button class="item" onclick="addFurniture('desk')">
+     <span class="itemIcon">💻</span>
+     <span class="itemName">مكتب</span>
+    </button>
+
+    <button class="item" onclick="addFurniture('chair')">
+     <span class="itemIcon">🪑</span>
+     <span class="itemName">كرسي</span>
+    </button>
+
+    <button class="item" onclick="addFurniture('wardrobe')">
+     <span class="itemIcon">🚪</span>
+     <span class="itemName">دولاب</span>
+    </button>
+
+    <button class="item" onclick="addFurniture('tv')">
+     <span class="itemIcon">📺</span>
+     <span class="itemName">تلفزيون</span>
+    </button>
+
+    <button class="item" onclick="addFurniture('shelf')">
+     <span class="itemIcon">📚</span>
+     <span class="itemName">رف</span>
+    </button>
+
+    <button class="item" onclick="addFurniture('lamp')">
+     <span class="itemIcon">💡</span>
+     <span class="itemName">مصباح</span>
+    </button>
+
+    <button class="item" onclick="addFurniture('plant')">
+     <span class="itemIcon">🌱</span>
+     <span class="itemName">نبتة</span>
+    </button>
+
+    <button class="item" onclick="addFurniture('painting')">
+     <span class="itemIcon">🖼️</span>
+     <span class="itemName">لوحة</span>
+    </button>
+
+    <button class="item" onclick="addFurniture('rug')">
+     <span class="itemIcon">🟫</span>
+     <span class="itemName">سجادة</span>
+    </button>
+
+   </div>
+
+   <div class="sectionTitle">خارجية</div>
+
+   <div class="libraryGrid">
+
+    <button class="item" onclick="addFurniture('tree')">
+     <span class="itemIcon">🌳</span>
+     <span class="itemName">شجرة</span>
+    </button>
+
+    <button class="item" onclick="addFurniture('outdoor')">
+     <span class="itemIcon">🔥</span>
+     <span class="itemName">جلسة</span>
+    </button>
+
+    <button class="item" onclick="addFurniture('pergola')">
+     <span class="itemIcon">🏡</span>
+     <span class="itemName">برجولة</span>
+    </button>
+
+    <button class="item" onclick="addFurniture('counter')">
+     <span class="itemIcon">🍳</span>
+     <span class="itemName">كاونتر</span>
+    </button>
+
+   </div>
+
+   <div class="sectionTitle">المكان</div>
+
+   <select id="spaceType" onchange="changeSpaceType(this.value)">
+    <option value="bedroom">غرفة نوم</option>
+    <option value="living">غرفة معيشة</option>
+    <option value="office">مكتب</option>
+    <option value="yard">حديقة</option>
+    <option value="roof">سطح</option>
+    <option value="studio">استوديو</option>
+   </select>
+
+  </div>
+ </aside>
+
+ <!-- RIGHT -->
+
+ <aside class="sidePanel rightPanel" id="rightPanel">
+
+  <div class="panelHeader">
+   <h2>⚙️ الخصائص</h2>
+   <button class="controlBtn" style="width:auto;padding:6px 10px" onclick="toggleRight()">✕</button>
+  </div>
+
+  <div class="panelBody">
+
+   <div class="sectionTitle">أبعاد المكان</div>
+
+   <div class="propGroup">
+    <label>العرض</label>
+    <input id="roomW" type="number" value="12" min="4" max="40" onchange="updateRoom()">
+   </div>
+
+   <div class="propGroup">
+    <label>العمق</label>
+    <input id="roomD" type="number" value="10" min="4" max="40" onchange="updateRoom()">
+   </div>
+
+   <div class="propGroup">
+    <label>الارتفاع</label>
+    <input id="roomH" type="number" value="4" min="2" max="15" onchange="updateRoom()">
+   </div>
+
+   <div class="sectionTitle">الخامات</div>
+
+   <div class="propGroup">
+    <label>الجدران</label>
+    <select id="wallMaterial" onchange="updateMaterials()">
+     <option value="paint">دهان</option>
+     <option value="wood">خشب</option>
+     <option value="marble">رخام</option>
+     <option value="concrete">خرسانة</option>
+    </select>
+   </div>
+
+   <div class="propGroup">
+    <label>الأرضية</label>
+    <select id="floorMaterial" onchange="updateMaterials()">
+     <option value="wood">خشب</option>
+     <option value="tile">بلاط</option>
+     <option value="marble">رخام</option>
+     <option value="grass">عشب</option>
+    </select>
+   </div>
+
+   <div class="sectionTitle">العنصر المحدد</div>
+
+   <div id="selectedInfo" class="infoBox">
+    لم يتم اختيار أي قطعة أثاث.
+   </div>
+
+   <br>
+
+   <div class="row">
+    <button class="controlBtn" onclick="moveSelected(-.25,0,0)">←</button>
+    <button class="controlBtn" onclick="moveSelected(.25,0,0)">→</button>
+   </div>
+
+   <br>
+
+   <div class="row">
+    <button class="controlBtn" onclick="moveSelected(0,0,-.25)">↑</button>
+    <button class="controlBtn" onclick="moveSelected(0,0,.25)">↓</button>
+   </div>
+
+   <br>
+
+   <div class="row">
+    <button class="controlBtn" onclick="moveSelected(0,.25,0)">⬆️</button>
+    <button class="controlBtn" onclick="moveSelected(0,-.25,0)">⬇️</button>
+   </div>
+
+   <br>
+
+   <div class="row">
+    <button class="controlBtn" onclick="rotateSelected(-Math.PI/12)">↶ دوران</button>
+    <button class="controlBtn" onclick="rotateSelected(Math.PI/12)">دوران ↷</button>
+   </div>
+
+   <br>
+
+   <div class="row">
+    <button class="controlBtn" onclick="scaleSelected(.9)">➖ تصغير</button>
+    <button class="controlBtn" onclick="scaleSelected(1.1)">➕ تكبير</button>
+   </div>
+
+   <br>
+
+   <button class="controlBtn danger" onclick="deleteSelected()">
+    🗑️ حذف العنصر
+   </button>
+
+  </div>
+ </aside>
+
+ <button class="panelToggle leftToggle" onclick="toggleLeft()">‹</button>
+ <button class="panelToggle rightToggle" onclick="toggleRight()">›</button>
+
+ <div class="bottomBar">
+
+  <button class="bottomBtn" onclick="setDesignMode()">🎨 تصميم</button>
+  <button class="bottomBtn" onclick="setFirstPerson()">👁️ منظور أول</button>
+  <button class="bottomBtn" onclick="topView()">🗺️ من الأعلى</button>
+  <button class="bottomBtn" onclick="toggleDayNight()">☀️/🌙</button>
+  <button class="bottomBtn" onclick="smartDesign()">✨ تصميم ذكي</button>
+  <button class="bottomBtn" onclick="undo()">↶</button>
+  <button class="bottomBtn" onclick="redo()">↷</button>
+  <button class="bottomBtn" onclick="saveProject()">💾 حفظ</button>
+  <button class="bottomBtn" onclick="loadProject()">📂 تحميل</button>
+  <button class="bottomBtn" onclick="takeScreenshot()">📸 صورة</button>
+  <button class="bottomBtn" onclick="resetCamera()">🎥 إعادة الكاميرا</button>
+
+ </div>
+
+ <div class="footer">
+  من تصميم AMR — شكراً ❤️
+ </div>
+
+</div>
+
+<div id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<script>
+
+/* =========================================================
+ GLOBAL
+========================================================= */
+
+let scene,camera,renderer;
+let roomGroup,furnitureGroup;
+let selectedObject=null;
+
+let roomW=12,roomD=10,roomH=4;
+let wallMaterialType="paint";
+let floorMaterialType="wood";
+
+let designMode=true;
+let ceilingVisible=true;
+let nightMode=false;
+
+let leftOpen=true;
+let rightOpen=true;
+
+let ambientLight,hemiLight,sunLight;
+
+let raycaster=new THREE.Raycaster();
+let mouse=new THREE.Vector2();
+
+let isDraggingFurniture=false;
+let isOrbiting=false;
+let isPanning=false;
+
+let dragPlane;
+let dragOffset=new THREE.Vector3();
+
+let orbitTarget=new THREE.Vector3(0,1,0);
+let orbitRadius=17;
+let orbitYaw=.65;
+let orbitPitch=.72;
+
+let panStart={x:0,y:0};
+let orbitStart={x:0,y:0};
+
+let yaw=Math.PI;
+let pitch=0;
+
+let keys={};
+let velocityY=0;
+let onGround=true;
+
+let clock=new THREE.Clock();
+
+let history=[];
+let historyIndex=-1;
+
+/* =========================================================
+ START
+========================================================= */
+
+function startApp(){
+
+ document.getElementById("startScreen").style.display="none";
+ document.getElementById("loadingScreen").style.display="flex";
+
+ setTimeout(()=>{
+
+  document.getElementById("loadingScreen").style.display="none";
+  document.getElementById("app").style.display="block";
+
+  init();
+
+ },650);
+}
+
+/* =========================================================
+ INIT
+========================================================= */
+
+function init(){
+
+ scene=new THREE.Scene();
+ scene.background=new THREE.Color(0x9dc5df);
+
+ camera=new THREE.PerspectiveCamera(
+  65,
+  window.innerWidth/window.innerHeight,
+  .05,
+  500
+ );
+
+ camera.rotation.order="YXZ";
+
+ renderer=new THREE.WebGLRenderer({
+  antialias:true,
+  preserveDrawingBuffer:true
+ });
+
+ renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+
+ renderer.setSize(
+  window.innerWidth,
+  window.innerHeight,
+  false
+ );
+
+ renderer.outputEncoding=THREE.sRGBEncoding;
+ renderer.toneMapping=THREE.ACESFilmicToneMapping;
+ renderer.toneMappingExposure=.72;
+
+ document.getElementById("canvasWrap")
+  .appendChild(renderer.domElement);
+
+ setupLights();
+ createWorld();
+ setupEvents();
+
+ setDesignMode();
+
+ animate();
+}
+
+/* =========================================================
+ LIGHTING
+========================================================= */
+
+function setupLights(){
+
+ ambientLight=new THREE.AmbientLight(
+  0xffffff,
+  .28
+ );
+
+ scene.add(ambientLight);
+
+ hemiLight=new THREE.HemisphereLight(
+  0xbfdcff,
+  0x17220f,
+  .38
+ );
+
+ scene.add(hemiLight);
+
+ sunLight=new THREE.DirectionalLight(
+  0xffffff,
+  .5
+ );
+
+ sunLight.position.set(10,15,8);
+
+ scene.add(sunLight);
+}
+
+/* =========================================================
+ MATERIALS
+========================================================= */
+
+function material(color,roughness=.72,metalness=0){
+
+ return new THREE.MeshStandardMaterial({
+  color,
+  roughness,
+  metalness
+ });
+}
+
+function box(w,h,d,color,roughness=.72){
+
+ let m=new THREE.Mesh(
+  new THREE.BoxGeometry(w,h,d),
+  material(color,roughness)
+ );
+
+ m.castShadow=true;
+ m.receiveShadow=true;
+
+ return m;
+}
+
+function cylinder(r,h,color){
+
+ let m=new THREE.Mesh(
+  new THREE.CylinderGeometry(r,r,h,24),
+  material(color)
+ );
+
+ m.castShadow=true;
+ m.receiveShadow=true;
+
+ return m;
+}
+
+function sphere(r,color){
+
+ let m=new THREE.Mesh(
+  new THREE.SphereGeometry(r,24,16),
+  material(color)
+ );
+
+ m.castShadow=true;
+ m.receiveShadow=true;
+
+ return m;
+}
+
+/* =========================================================
+ WORLD
+========================================================= */
+
+function createWorld(){
+
+ if(roomGroup)
+  scene.remove(roomGroup);
+
+ if(furnitureGroup)
+  scene.remove(furnitureGroup);
+
+ roomGroup=new THREE.Group();
+ furnitureGroup=new THREE.Group();
+
+ scene.add(roomGroup);
+ scene.add(furnitureGroup);
+
+ createRoom();
+
+ centerCamera();
+}
+
+/* =========================================================
+ ROOM
+========================================================= */
+
+function getWallMaterial(){
+
+ let colors={
+  paint:0xd8dee9,
+  wood:0x95643d,
+  marble:0xdfe4e8,
+  concrete:0x898e93
+ };
+
+ return material(colors[wallMaterialType],.8);
+}
+
+function getFloorMaterial(){
+
+ let colors={
+  wood:0x76502f,
+  tile:0x9da6af,
+  marble:0xd5d9de,
+  grass:0x4d7d3b
+ };
+
+ return material(colors[floorMaterialType],.86);
+}
+
+function createRoom(){
+
+ let wallMat=getWallMaterial();
+ let floorMat=getFloorMaterial();
+
+ let floor=box(roomW,.25,roomD,
+  floorMaterialType==="grass"?0x4d7d3b:floorMat.color.getHex());
+
+ floor.position.y=-.125;
+
+ roomGroup.add(floor);
+
+ /* floor decorative grid */
+
+ if(floorMaterialType!=="grass"){
+
+  let grid=new THREE.GridHelper(
+   Math.max(roomW,roomD),
+   Math.max(roomW,roomD)*2,
+   0x777777,
+   0x999999
+  );
+
+  grid.position.y=.01;
+  grid.material.opacity=.12;
+  grid.material.transparent=true;
+
+  roomGroup.add(grid);
+ }
+
+ let t=.25;
+
+ let back=box(roomW,roomH,t,wallMat.color.getHex());
+ back.position.set(0,roomH/2,-roomD/2);
+ roomGroup.add(back);
+
+ let front=box(roomW,roomH,t,wallMat.color.getHex());
+ front.position.set(0,roomH/2,roomD/2);
+ roomGroup.add(front);
+
+ let left=box(t,roomH,roomD,wallMat.color.getHex());
+ left.position.set(-roomW/2,roomH/2,0);
+ roomGroup.add(left);
+
+ let right=box(t,roomH,roomD,wallMat.color.getHex());
+ right.position.set(roomW/2,roomH/2,0);
+ roomGroup.add(right);
+
+ let ceiling=box(roomW,.18,roomD,0xf1f3f5);
+
+ ceiling.position.y=roomH;
+ ceiling.name="CEILING";
+
+ roomGroup.add(ceiling);
+
+ /* corner details */
+
+ let postMat=material(0x414850,.62,.15);
+
+ [
+  [-roomW/2,0,-roomD/2],
+  [ roomW/2,0,-roomD/2],
+  [-roomW/2,0, roomD/2],
+  [ roomW/2,0, roomD/2]
+ ].forEach(p=>{
+
+  let post=box(.28,roomH+.05,.28,postMat.color.getHex());
+
+  post.position.set(
+   p[0],
+   roomH/2,
+   p[2]
+  );
+
+  roomGroup.add(post);
+ });
+
+ addCeilingLight();
+}
+
+/* =========================================================
+ CEILING LIGHT
+========================================================= */
+
+function addCeilingLight(){
+
+ let fixture=box(
+  1.3,.08,.55,
+  0xd9dde2,
+  .35
+ );
+
+ fixture.position.set(
+  0,
+  roomH-.18,
+  0
+ );
+
+ roomGroup.add(fixture);
+
+ let bulb=box(
+  .9,.06,.28,
+  0xffffd6,
+  .15
+ );
+
+ bulb.position.set(
+  0,
+  roomH-.25,
+  0
+ );
+
+ bulb.material.emissive=new THREE.Color(0xffffaa);
+ bulb.material.emissiveIntensity=.7;
+
+ roomGroup.add(bulb);
+
+ let light=new THREE.PointLight(
+  0xffedc2,
+  nightMode?.7:1,
+  Math.max(roomW,roomD)*1.7
+ );
+
+ light.position.set(
+  0,
+  roomH-.4,
+  0
+ );
+
+ light.name="ROOM_POINT_LIGHT";
+
+ roomGroup.add(light);
+}
+
+/* =========================================================
+ FURNITURE
+========================================================= */
+
+function addFurniture(type){
+
+ let g=new THREE.Group();
+
+ g.userData.type=type;
+ g.userData.label=getLabel(type);
+
+ switch(type){
+
+  case"bed":createBed(g);break;
+  case"sofa":createSofa(g);break;
+  case"table":createTable(g);break;
+  case"desk":createDesk(g);break;
+  case"chair":createChair(g);break;
+  case"wardrobe":createWardrobe(g);break;
+  case"tv":createTV(g);break;
+  case"shelf":createShelf(g);break;
+  case"lamp":createLamp(g);break;
+  case"plant":createPlant(g);break;
+  case"painting":createPainting(g);break;
+  case"rug":createRug(g);break;
+  case"tree":createTree(g);break;
+  case"outdoor":createOutdoor(g);break;
+  case"pergola":createPergola(g);break;
+  case"counter":createCounter(g);break;
+ }
+
+ g.position.set(0,0,0);
+
+ furnitureGroup.add(g);
+
+ selectObject(g);
+ saveHistory();
+
+ toast("تمت إضافة "+g.userData.label+" ✓");
+}
+
+function getLabel(type){
+
+ let labels={
+  bed:"سرير",
+  sofa:"كنبة",
+  table:"طاولة",
+  desk:"مكتب",
+  chair:"كرسي",
+  wardrobe:"دولاب",
+  tv:"تلفزيون",
+  shelf:"رف",
+  lamp:"مصباح",
+  plant:"نبتة",
+  painting:"لوحة",
+  rug:"سجادة",
+  tree:"شجرة",
+  outdoor:"جلسة خارجية",
+  pergola:"برجولة",
+  counter:"كاونتر"
+ };
+
+ return labels[type]||"عنصر";
+}
+
+/* =========================================================
+ DETAILED BED
+========================================================= */
+
+function createBed(g){
+
+ let wood=0x5a3924;
+ let fabric=0xe7e9ed;
+ let blanket=0x355f91;
+ let dark=0x30251e;
+
+ let base=box(3.5,.42,5.4,wood);
+ base.position.y=.28;
+ g.add(base);
+
+ let baseTrim=box(3.65,.12,5.55,0x3d281b);
+ baseTrim.position.y=.08;
+ g.add(baseTrim);
+
+ let mattress=box(3.28,.45,5.15,fabric);
+ mattress.position.y=.7;
+ g.add(mattress);
+
+ let mattressTop=box(3.05,.08,4.95,0xf5f6f7);
+ mattressTop.position.y=.94;
+ g.add(mattressTop);
+
+ let blanketObj=box(3.05,.15,2.25,blanket);
+ blanketObj.position.set(0,1.02,.75);
+ g.add(blanketObj);
+
+ let blanketFold=box(3.08,.12,.3,0x294d76);
+ blanketFold.position.set(0,1.12,-.35);
+ g.add(blanketFold);
+
+ for(let x of[-.82,.82]){
+
+  let pillow=box(1.25,.25,.72,0xffffff,.55);
+
+  pillow.position.set(
+   x,
+   1.05,
+   -1.72
+  );
+
+  pillow.rotation.z=x<0?-.03:.03;
+
+  g.add(pillow);
+ }
+
+ let head=box(3.55,1.45,.28,wood);
+ head.position.set(0,.88,-2.7);
+ g.add(head);
+
+ let headInner=box(3.05,1.02,.06,0x6f492d);
+ headInner.position.set(0,.98,-2.86);
+ g.add(headInner);
+
+ for(let x of[-1.55,1.55]){
+
+  let leg=cylinder(.1,.35,dark);
+
+  leg.position.set(
+   x,
+   .02,
+   -2.25
+  );
+
+  g.add(leg);
+ }
+}
+
+/* =========================================================
+ DETAILED SOFA
+========================================================= */
+
+function createSofa(g){
+
+ let baseColor=0x405267;
+ let dark=0x263446;
+ let cushion=0x596d82;
+
+ let base=box(4.4,.55,1.85,dark);
+ base.position.y=.48;
+ g.add(base);
+
+ let seat=box(4.15,.55,1.55,baseColor);
+ seat.position.y=.88;
+ g.add(seat);
+
+ let back=box(4.25,1.75,.42,dark);
+ back.position.set(0,1.55,-.68);
+ g.add(back);
+
+ for(let x of[-1.95,1.95]){
+
+  let arm=box(.42,1.25,1.75,dark);
+  arm.position.set(x,1.05,0);
+  g.add(arm);
+ }
+
+ for(let x of[-1.35,0,1.35]){
+
+  let c=box(1.15,.18,1.18,cushion,.9);
+  c.position.set(x,1.2,.02);
+  g.add(c);
+ }
+
+ /* back cushions */
+
+ for(let x of[-1.35,0,1.35]){
+
+  let c=box(1.13,.95,.18,0x4e6277,.92);
+  c.position.set(x,1.72,-.46);
+  c.rotation.x=-.08;
+  g.add(c);
+ }
+
+ /* legs */
+
+ for(let x of[-1.65,1.65]){
+  for(let z of[-.55,.55]){
+
+   let leg=cylinder(.08,.35,0x171c22);
+   leg.position.set(x,.18,z);
+   g.add(leg);
+  }
+ }
+}
+
+/* =========================================================
+ TABLE
+========================================================= */
+
+function createTable(g){
+
+ let wood=0x8b5b35;
+ let dark=0x4c301d;
+
+ let top=box(3.3,.25,1.8,wood,.55);
+ top.position.y=1.48;
+ g.add(top);
+
+ let edge=box(3.45,.12,1.94,dark);
+ edge.position.y=1.34;
+ g.add(edge);
+
+ for(let x of[-1.25,1.25]){
+  for(let z of[-.62,.62]){
+
+   let leg=box(.2,1.35,.2,dark);
+
+   leg.position.set(
+    x,
+    .67,
+    z
+   );
+
+   g.add(leg);
+  }
+ }
+
+ /* small decoration */
+
+ let center=cylinder(.3,.08,0xb88950);
+ center.position.y=1.66;
+ g.add(center);
+}
+
+/* =========================================================
+ DESK
+========================================================= */
+
+function createDesk(g){
+
+ let wood=0x704725;
+ let dark=0x252b32;
+
+ let top=box(3.2,.22,1.35,wood,.55);
+ top.position.y=1.48;
+ g.add(top);
+
+ for(let x of[-1.25,1.25]){
+
+  let leg=box(.22,1.45,.22,dark);
+  leg.position.set(x,.72,0);
+  g.add(leg);
+ }
+
+ let drawer=box(.85,.55,1.05,0x55351f);
+ drawer.position.set(1.0,1.05,0);
+ g.add(drawer);
+
+ let handle=box(.45,.04,.05,0xc7a46a);
+ handle.position.set(1,1.06,-.55);
+ g.add(handle);
+
+ let monitor=box(1.5,.9,.1,0x111827,.3);
+ monitor.position.set(-.25,2.05,-.2);
+ g.add(monitor);
+
+ let display=box(1.3,.68,.025,0x1e5b7c,.15);
+ display.position.set(-.25,2.05,-.26);
+ g.add(display);
+
+ let stand=box(.14,.42,.14,dark);
+ stand.position.set(-.25,1.67,-.2);
+ g.add(stand);
+
+ let base=box(.65,.08,.4,dark);
+ base.position.set(-.25,1.47,-.2);
+ g.add(base);
+
+ /* keyboard */
+
+ let keyboard=box(1.35,.08,.45,0x202832,.65);
+ keyboard.position.set(-.25,1.64,.35);
+ g.add(keyboard);
+}
+
+/* =========================================================
+ CHAIR
+========================================================= */
+
+function createChair(g){
+
+ let dark=0x20262d;
+ let fabric=0x465a70;
+
+ let seat=box(1.35,.22,1.35,fabric);
+ seat.position.y=1;
+ g.add(seat);
+
+ let back=box(1.35,1.55,.22,fabric);
+ back.position.set(0,1.75,-.53);
+ g.add(back);
+
+ for(let x of[-.52,.52]){
+  for(let z of[-.52,.52]){
+
+   let leg=cylinder(.075,1,dark);
+   leg.position.set(x,.5,z);
+   g.add(leg);
+  }
+ }
+
+ let base=cylinder(.08,.2,dark);
+ base.position.y=.08;
+ g.add(base);
+}
+
+/* =========================================================
+ WARDROBE
+========================================================= */
+
+function createWardrobe(g){
+
+ let body=0x70472b;
+ let trim=0x422a1c;
+ let metal=0xd1a96b;
+
+ let frame=box(2.8,3.5,.85,body);
+ frame.position.y=1.75;
+ g.add(frame);
+
+ let inner=box(2.55,3.2,.05,0x55351f);
+ inner.position.set(0,1.75,-.45);
+ g.add(inner);
+
+ for(let x of[-.68,.68]){
+
+  let door=box(1.28,3.12,.08,body);
+  door.position.set(x,1.75,-.49);
+  g.add(door);
+
+  let handle=cylinder(.06,.22,metal);
+  handle.rotation.z=Math.PI/2;
+  handle.position.set(
+   x+(x<0?.45:-.45),
+   1.75,
+   -.56
+  );
+
+  g.add(handle);
+ }
+
+ let top=box(2.95,.13,.95,trim);
+ top.position.y=3.5;
+ g.add(top);
+}
+
+/* =========================================================
+ TV
+========================================================= */
+
+function createTV(g){
+
+ let dark=0x11151b;
+
+ let screen=box(3.5,.12,2,dark,.25);
+ screen.position.y=2;
+ g.add(screen);
+
+ let display=box(3.2,.025,1.7,0x123247,.15);
+ display.position.set(0,2,.08);
+ g.add(display);
+
+ /* glow */
+
+ let glow=box(2.8,.01,1.4,0x245b76,.1);
+ glow.position.set(0,2,.1);
+ g.add(glow);
+
+ let stand=box(.55,.55,.35,dark);
+ stand.position.y=.82;
+ g.add(stand);
+
+ let base=box(1.6,.12,.65,dark);
+ base.position.y=.5;
+ g.add(base);
+}
+
+/* =========================================================
+ SHELF
+========================================================= */
+
+function createShelf(g){
+
+ let wood=0x754b2b;
+
+ for(let x of[-1.25,1.25]){
+
+  let side=box(.18,3.3,.6,wood);
+  side.position.set(x,1.65,0);
+  g.add(side);
+ }
+
+ for(let y of[.25,1.05,1.85,2.65,3.3]){
+
+  let board=box(2.6,.14,.65,wood);
+  board.position.y=y;
+  g.add(board);
+ }
+
+ let colors=[
+  0xc2410c,
+  0x2563eb,
+  0x16a34a,
+  0x9333ea,
+  0xeab308
+ ];
+
+ for(let i=0;i<8;i++){
+
+  let book=box(
+   .22+.08*(i%3),
+   .55+.12*(i%2),
+   .4,
+   colors[i%colors.length]
+  );
+
+  book.position.set(
+   -1.05+(i%4)*.55,
+   .58,
+   -.03
+  );
+
+  g.add(book);
+ }
+}
+
+/* =========================================================
+ LAMP
+========================================================= */
+
+function createLamp(g){
+
+ let dark=0x292929;
+
+ let base=cylinder(.42,.15,dark);
+ base.position.y=.08;
+ g.add(base);
+
+ let pole=cylinder(.07,1.65,dark);
+ pole.position.y=.9;
+ g.add(pole);
+
+ let shade=cylinder(.48,.5,0xe5c985);
+ shade.position.y=1.95;
+ g.add(shade);
+
+ let bulb=sphere(.16,0xffffc7);
+ bulb.position.y=1.72;
+ bulb.material.emissive=new THREE.Color(0xffff88);
+ bulb.material.emissiveIntensity=.8;
+ g.add(bulb);
+}
+
+/* =========================================================
+ PLANT
+========================================================= */
+
+function createPlant(g){
+
+ let pot=cylinder(.55,.65,0xb45309);
+ pot.position.y=.33;
+ g.add(pot);
+
+ let soil=cylinder(.43,.08,0x35251b);
+ soil.position.y=.67;
+ g.add(soil);
+
+ let stem=cylinder(.08,1.45,0x166534);
+ stem.position.y=1.35;
+ g.add(stem);
+
+ for(let i=0;i<10;i++){
+
+  let leaf=sphere(.32,0x228b22);
+
+  let a=i/10*Math.PI*2;
+
+  leaf.position.set(
+   Math.cos(a)*.38,
+   1.25+(i%3)*.3,
+   Math.sin(a)*.38
+  );
+
+  leaf.scale.set(
+   1.15,.45,.7
+  );
+
+  g.add(leaf);
+ }
+}
+
+/* =========================================================
+ PAINTING
+========================================================= */
+
+function createPainting(g){
+
+ let frame=box(3,2.1,.15,0x55351f);
+ frame.position.y=2;
+ g.add(frame);
+
+ let art=box(2.62,1.72,.035,0x245b7a);
+ art.position.set(0,2,.1);
+ g.add(art);
+
+ let mountain1=new THREE.Mesh(
+  new THREE.ConeGeometry(1,1.4,4),
+  material(0x355c48)
+ );
+
+ mountain1.rotation.y=Math.PI/4;
+ mountain1.scale.set(1.4,.7,.25);
+ mountain1.position.set(-.65,1.65,.15);
+ g.add(mountain1);
+
+ let sun=sphere(.25,0xfacc15);
+ sun.position.set(.7,2.45,.16);
+ g.add(sun);
+}
+
+/* =========================================================
+ RUG
+========================================================= */
+
+function createRug(g){
+
+ let outer=box(4.5,.05,3,0x43206d);
+ outer.position.y=.03;
+ g.add(outer);
+
+ let inner=box(4.15,.055,2.65,0x7c3aed);
+ inner.position.y=.06;
+ g.add(inner);
+
+ let center=box(3.65,.06,2.15,0x8b5cf6);
+ center.position.y=.08;
+ g.add(center);
+
+ for(let x of[-1.7,1.7]){
+  let line=box(.06,.07,2.3,0xc4b5fd);
+  line.position.set(x,.1,0);
+  g.add(line);
+ }
+}
+
+/* =========================================================
+ TREE
+========================================================= */
+
+function createTree(g){
+
+ let trunk=cylinder(.3,2.5,0x754522);
+ trunk.position.y=1.25;
+ g.add(trunk);
+
+ let crown=sphere(1.45,0x1f7a35);
+ crown.position.y=3;
+ g.add(crown);
+
+ let crown2=sphere(1.05,0x299447);
+ crown2.position.set(.65,3.35,.2);
+ g.add(crown2);
+
+ let crown3=sphere(.95,0x237d39);
+ crown3.position.set(-.65,3.3,-.1);
+ g.add(crown3);
+}
+
+/* =========================================================
+ OUTDOOR
+========================================================= */
+
+function createOutdoor(g){
+
+ let wood=0x794d2d;
+
+ let seat=box(3.4,.35,1.05,wood);
+ seat.position.y=.8;
+ g.add(seat);
+
+ let back=box(3.4,1.1,.22,wood);
+ back.position.set(0,1.35,-.4);
+ g.add(back);
+
+ for(let x of[-1.35,1.35]){
+
+  let leg=box(.16,.8,.16,0x4b2d1b);
+  leg.position.set(x,.4,0);
+  g.add(leg);
+ }
+
+ let fireBase=cylinder(.65,.2,0x444444);
+ fireBase.position.set(0,.12,1);
+ g.add(fireBase);
+
+ let fire=sphere(.38,0xff7a00);
+ fire.scale.y=1.3;
+ fire.position.set(0,.5,1);
+ fire.material.emissive=new THREE.Color(0xff4500);
+ fire.material.emissiveIntensity=.8;
+ g.add(fire);
+}
+
+/* =========================================================
+ PERGOLA
+========================================================= */
+
+function createPergola(g){
+
+ let wood=0x754b2b;
+
+ for(let x of[-2,2]){
+  for(let z of[-1.5,1.5]){
+
+   let post=box(.28,3.2,.28,wood);
+   post.position.set(x,1.6,z);
+   g.add(post);
+  }
+ }
+
+ for(let x of[-1,0,1]){
+
+  let beam=box(.22,3.2,3.8,wood);
+  beam.position.set(x*1.8,3.05,0);
+  g.add(beam);
+ }
+
+ let roof=box(4.5,.25,3.8,wood);
+ roof.position.y=3.25;
+ g.add(roof);
+}
+
+/* =========================================================
+ COUNTER
+========================================================= */
+
+function createCounter(g){
+
+ let body=box(3.7,1.4,1,0x704725);
+ body.position.y=.7;
+ g.add(body);
+
+ let top=box(3.95,.18,1.2,0xd7d9dc,.3);
+ top.position.y=1.5;
+ g.add(top);
+
+ for(let x of[-1.1,0,1.1]){
+
+  let drawer=box(.8,.5,.05,0x55351f);
+  drawer.position.set(x,1,-.53);
+  g.add(drawer);
+
+  let handle=cylinder(.04,.25,0xcaa56b);
+  handle.rotation.z=Math.PI/2;
+  handle.position.set(x,1,-.58);
+  g.add(handle);
+ }
+}
+
+/* =========================================================
+ SELECTION
+========================================================= */
+
+function selectObject(obj){
+
+ clearSelection();
+
+ selectedObject=obj;
+
+ if(!obj)return;
+
+ obj.traverse(c=>{
+
+  if(c.isMesh){
+
+   c.userData.oldEmissive=
+    c.material.emissive?
+    c.material.emissive.clone():
+    new THREE.Color(0,0,0);
+
+   c.userData.oldIntensity=
+    c.material.emissiveIntensity||0;
+
+   if(!c.material.emissive)
+    c.material.emissive=new THREE.Color();
+
+   c.material.emissive.set(0x164e2a);
+   c.material.emissiveIntensity=.15;
+  }
+ });
+
+ document.getElementById("selectedInfo").innerHTML=
+  "العنصر المحدد:<br><strong>"+
+  (obj.userData.label||"عنصر")+
+  "</strong><br><br>"+
+  "اسحب العنصر بالماوس لتحريكه.";
+}
+
+function clearSelection(){
+
+ if(!selectedObject)return;
+
+ selectedObject.traverse(c=>{
+
+  if(c.isMesh && c.userData.oldEmissive){
+
+   c.material.emissive.copy(
+    c.userData.oldEmissive
+   );
+
+   c.material.emissiveIntensity=
+    c.userData.oldIntensity;
+  }
+ });
+
+ selectedObject=null;
+
+ document.getElementById("selectedInfo").innerHTML=
+  "لم يتم اختيار أي قطعة أثاث.";
+}
+
+/* =========================================================
+ MOUSE COORDS
+========================================================= */
+
+function updateMouse(e){
+
+ let rect=renderer.domElement.getBoundingClientRect();
+
+ mouse.x=
+  ((e.clientX-rect.left)/rect.width)*2-1;
+
+ mouse.y=
+  -((e.clientY-rect.top)/rect.height)*2+1;
+}
+
+/* =========================================================
+ DESIGN CONTROLS
+========================================================= */
+
+function onPointerDown(e){
+
+ if(!designMode)return;
+
+ if(e.button===0){
+
+  updateMouse(e);
+
+  raycaster.setFromCamera(mouse,camera);
+
+  let hits=raycaster.intersectObjects(
+   furnitureGroup.children,
+   true
+  );
+
+  if(hits.length){
+
+   let obj=hits[0].object;
+
+   while(
+    obj.parent &&
+    obj.parent!==furnitureGroup
+   ){
+    obj=obj.parent;
+   }
+
+   selectObject(obj);
+
+   isDraggingFurniture=true;
+
+   dragPlane=new THREE.Plane(
+    new THREE.Vector3(0,1,0),
+    0
+   );
+
+   let point=new THREE.Vector3();
+
+   raycaster.ray.intersectPlane(
+    dragPlane,
+    point
+   );
+
+   dragOffset.copy(
+    selectedObject.position
+   ).sub(point);
+
+   renderer.domElement.setPointerCapture?.(
+    e.pointerId
+   );
+
+  }else{
+
+   clearSelection();
+
+   isPanning=true;
+
+   panStart.x=e.clientX;
+   panStart.y=e.clientY;
+  }
+ }
+
+ /* RIGHT CLICK = ORBIT */
+
+ if(e.button===2){
+
+  e.preventDefault();
+
+  isOrbiting=true;
+
+  orbitStart.x=e.clientX;
+  orbitStart.y=e.clientY;
+ }
+
+ /* MIDDLE = PAN */
+
+ if(e.button===1){
+
+  e.preventDefault();
+
+  isPanning=true;
+
+  panStart.x=e.clientX;
+  panStart.y=e.clientY;
+ }
+}
+
+function onPointerMove(e){
+
+ if(!designMode)return;
+
+ /* Furniture */
+
+ if(isDraggingFurniture && selectedObject){
+
+  updateMouse(e);
+
+  raycaster.setFromCamera(mouse,camera);
+
+  let point=new THREE.Vector3();
+
+  if(
+   raycaster.ray.intersectPlane(
+    dragPlane,
+    point
+   )
+  ){
+
+   selectedObject.position.x=
+    point.x+dragOffset.x;
+
+   selectedObject.position.z=
+    point.z+dragOffset.z;
+
+   keepInsideRoom();
+  }
+
+  return;
+ }
+
+ /* Orbit */
+
+ if(isOrbiting){
+
+  let dx=e.clientX-orbitStart.x;
+  let dy=e.clientY-orbitStart.y;
+
+  orbitYaw-=dx*.006;
+  orbitPitch-=dy*.006;
+
+  orbitPitch=Math.max(
+   .12,
+   Math.min(
+    1.45,
+    orbitPitch
+   )
+  );
+
+  orbitStart.x=e.clientX;
+  orbitStart.y=e.clientY;
+
+  updateOrbitCamera();
+
+  return;
+ }
+
+ /* Pan */
+
+ if(isPanning){
+
+  let dx=e.clientX-panStart.x;
+  let dy=e.clientY-panStart.y;
+
+  let scale=orbitRadius*.0015;
+
+  let right=new THREE.Vector3();
+  camera.getWorldDirection(right);
+
+  right.crossVectors(
+   camera.up,
+   right
+  ).normalize();
+
+  let up=new THREE.Vector3(0,1,0);
+
+  orbitTarget.addScaledVector(
+   right,
+   dx*scale
+  );
+
+  orbitTarget.addScaledVector(
+   up,
+   dy*scale
+  );
+
+  panStart.x=e.clientX;
+  panStart.y=e.clientY;
+
+  updateOrbitCamera();
+ }
+}
+
+function onPointerUp(e){
+
+ if(isDraggingFurniture){
+
+  isDraggingFurniture=false;
+  saveHistory();
+ }
+
+ isOrbiting=false;
+ isPanning=false;
+
+ renderer.domElement.releasePointerCapture?.(
+  e.pointerId
+ );
+}
+
+/* =========================================================
+ DESIGN WHEEL
+========================================================= */
+
+function onWheel(e){
+
+ if(!designMode)return;
+
+ e.preventDefault();
+
+ orbitRadius+=e.deltaY*.012;
+
+ orbitRadius=Math.max(
+  4,
+  Math.min(
+   50,
+   orbitRadius
+  )
+ );
+
+ updateOrbitCamera();
+}
+
+/* =========================================================
+ ORBIT CAMERA
+========================================================= */
+
+function updateOrbitCamera(){
+
+ let x=
+  orbitTarget.x+
+  orbitRadius*
+  Math.cos(orbitPitch)*
+  Math.sin(orbitYaw);
+
+ let y=
+  orbitTarget.y+
+  orbitRadius*
+  Math.sin(orbitPitch);
+
+ let z=
+  orbitTarget.z+
+  orbitRadius*
+  Math.cos(orbitPitch)*
+  Math.cos(orbitYaw);
+
+ camera.position.set(x,y,z);
+
+ camera.lookAt(orbitTarget);
+}
+
+/* =========================================================
+ CENTER
+========================================================= */
+
+function centerCamera(){
+
+ orbitTarget.set(
+  0,
+  roomH*.4,
+  0
+ );
+
+ orbitRadius=
+  Math.max(roomW,roomD)*1.25;
+
+ orbitYaw=.65;
+ orbitPitch=.72;
+
+ updateOrbitCamera();
+}
+
+/* =========================================================
+ FIRST PERSON
+========================================================= */
+
+function setFirstPerson(){
+
+ designMode=false;
+
+ document.getElementById("modeBadge").textContent=
+  "👁️ منظور أول — WASD للحركة";
+
+ document.getElementById("crosshair").style.display=
+  "block";
+
+ camera.position.set(
+  0,
+  1.65,
+  roomD*.35
+ );
+
+ yaw=Math.PI;
+ pitch=0;
+
+ camera.rotation.set(
+  pitch,
+  yaw,
+  0
+ );
+
+ renderer.domElement.style.cursor="crosshair";
+
+ toast("اضغط داخل الشاشة ثم استخدم WASD");
+}
+
+function updateFirstPerson(dt){
+
+ if(designMode)return;
+
+ camera.rotation.order="YXZ";
+
+ camera.rotation.y=yaw;
+ camera.rotation.x=pitch;
+ camera.rotation.z=0;
+
+ let forward=new THREE.Vector3(
+  -Math.sin(yaw),
+  0,
+  -Math.cos(yaw)
+ );
+
+ let right=new THREE.Vector3(
+  Math.cos(yaw),
+  0,
+  -Math.sin(yaw)
+ );
+
+ let move=new THREE.Vector3();
+
+ if(keys["KeyW"])
+  move.add(forward);
+
+ if(keys["KeyS"])
+  move.sub(forward);
+
+ if(keys["KeyD"])
+  move.add(right);
+
+ if(keys["KeyA"])
+  move.sub(right);
+
+ if(move.length()>0)
+  move.normalize();
+
+ camera.position.addScaledVector(
+  move,
+  4.2*dt
+ );
+
+ if(keys["Space"] && onGround){
+
+  velocityY=5;
+  onGround=false;
+ }
+
+ velocityY-=12*dt;
+
+ camera.position.y+=velocityY*dt;
+
+ if(camera.position.y<=1.65){
+
+  camera.position.y=1.65;
+  velocityY=0;
+  onGround=true;
+ }
+
+ let margin=.45;
+
+ camera.position.x=Math.max(
+  -roomW/2+margin,
+  Math.min(
+   roomW/2-margin,
+   camera.position.x
+  )
+ );
+
+ camera.position.z=Math.max(
+  -roomD/2+margin,
+  Math.min(
+   roomD/2-margin,
+   camera.position.z
+  )
+ );
+}
+
+/* =========================================================
+ EVENTS
+========================================================= */
+
+function setupEvents(){
+
+ window.addEventListener(
+  "resize",
+  onResize
+ );
+
+ renderer.domElement.addEventListener(
+  "pointerdown",
+  onPointerDown
+ );
+
+ renderer.domElement.addEventListener(
+  "pointermove",
+  onPointerMove
+ );
+
+ renderer.domElement.addEventListener(
+  "pointerup",
+  onPointerUp
+ );
+
+ renderer.domElement.addEventListener(
+  "pointercancel",
+  onPointerUp
+ );
+
+ renderer.domElement.addEventListener(
+  "wheel",
+  onWheel,
+  {passive:false}
+ );
+
+ renderer.domElement.addEventListener(
+  "contextmenu",
+  e=>e.preventDefault()
+ );
+
+ document.addEventListener(
+  "keydown",
+  e=>{
+
+   keys[e.code]=true;
+
+   if(e.code==="Delete")
+    deleteSelected();
+  }
+ );
+
+ document.addEventListener(
+  "keyup",
+  e=>{
+   keys[e.code]=false;
+  }
+ );
+
+ renderer.domElement.addEventListener(
+  "click",
+  ()=>{
+
+   if(
+    !designMode &&
+    renderer.domElement.requestPointerLock
+   ){
+
+    renderer.domElement.requestPointerLock();
+   }
+  }
+ );
+
+ document.addEventListener(
+  "mousemove",
+  e=>{
+
+   if(
+    !designMode &&
+    document.pointerLockElement===
+    renderer.domElement
+   ){
+
+    yaw-=e.movementX*.0025;
+    pitch-=e.movementY*.0025;
+
+    pitch=Math.max(
+     -Math.PI/2+.05,
+     Math.min(
+      Math.PI/2-.05,
+      pitch
+     )
+    );
+   }
+  }
+ );
+}
+
+/* =========================================================
+ DESIGN MODE
+========================================================= */
+
+function setDesignMode(){
+
+ if(document.pointerLockElement)
+  document.exitPointerLock();
+
+ designMode=true;
+
+ document.getElementById("modeBadge").textContent=
+  "🎨 وضع التصميم — اسحب بالأيمن للدوران";
+
+ document.getElementById("crosshair").style.display=
+  "none";
+
+ renderer.domElement.style.cursor="grab";
+
+ centerCamera();
+
+ toast(
+  "🎨 وضع التصميم: الأيمن للدوران • الأوسط للتحريك • العجلة للتقريب"
+ );
+}
+
+/* =========================================================
+ TOP VIEW
+========================================================= */
+
+function topView(){
+
+ designMode=true;
+
+ document.getElementById("crosshair").style.display="none";
+
+ camera.position.set(
+  0,
+  Math.max(roomW,roomD)*1.3,
+  .01
+ );
+
+ camera.lookAt(
+  0,
+  0,
+  0
+ );
+
+ toast("🗺️ العرض من الأعلى");
+}
+
+/* =========================================================
+ MOVE
+========================================================= */
+
+function moveSelected(x,y,z){
+
+ if(!selectedObject){
+
+  toast("حدد قطعة أولاً");
+  return;
+ }
+
+ selectedObject.position.x+=x;
+ selectedObject.position.y+=y;
+ selectedObject.position.z+=z;
+
+ keepInsideRoom();
+ saveHistory();
+}
+
+function keepInsideRoom(){
+
+ if(!selectedObject)return;
+
+ let margin=.5;
+
+ selectedObject.position.x=
+  Math.max(
+   -roomW/2+margin,
+   Math.min(
+    roomW/2-margin,
+    selectedObject.position.x
+   )
+  );
+
+ selectedObject.position.z=
+  Math.max(
+   -roomD/2+margin,
+   Math.min(
+    roomD/2-margin,
+    selectedObject.position.z
+   )
+  );
+
+ selectedObject.position.y=
+  Math.max(
+   0,
+   Math.min(
+    roomH-1,
+    selectedObject.position.y
+   )
+  );
+}
+
+function rotateSelected(a){
+
+ if(!selectedObject){
+
+  toast("حدد قطعة أولاً");
+  return;
+ }
+
+ selectedObject.rotation.y+=a;
+
+ saveHistory();
+}
+
+function scaleSelected(v){
+
+ if(!selectedObject){
+
+  toast("حدد قطعة أولاً");
+  return;
+ }
+
+ selectedObject.scale.multiplyScalar(v);
+
+ keepInsideRoom();
+
+ saveHistory();
+}
+
+function deleteSelected(){
+
+ if(!selectedObject){
+
+  toast("حدد قطعة أولاً");
+  return;
+ }
+
+ furnitureGroup.remove(selectedObject);
+
+ selectedObject=null;
+
+ document.getElementById("selectedInfo").innerHTML=
+  "لم يتم اختيار أي قطعة أثاث.";
+
+ saveHistory();
+
+ toast("تم حذف العنصر");
+}
+
+/* =========================================================
+ PANELS
+========================================================= */
+
+function toggleLeft(){
+
+ leftOpen=!leftOpen;
+
+ document.getElementById("leftPanel")
+  .classList.toggle(
+   "hidden",
+   !leftOpen
+  );
+}
+
+function toggleRight(){
+
+ rightOpen=!rightOpen;
+
+ document.getElementById("rightPanel")
+  .classList.toggle(
+   "hidden",
+   !rightOpen
+  );
+}
+
+/* =========================================================
+ CEILING
+========================================================= */
+
+function toggleCeiling(){
+
+ ceilingVisible=!ceilingVisible;
+
+ let ceiling=
+  roomGroup.getObjectByName("CEILING");
+
+ if(ceiling)
+  ceiling.visible=ceilingVisible;
+
+ toast(
+  ceilingVisible?
+  "تم إظهار السقف":
+  "تم إخفاء السقف"
+ );
+}
+
+/* =========================================================
+ DAY NIGHT
+========================================================= */
+
+function toggleDayNight(){
+
+ nightMode=!nightMode;
+
+ if(nightMode){
+
+  scene.background.setHex(0x07111f);
+
+  ambientLight.intensity=.13;
+  hemiLight.intensity=.17;
+  sunLight.intensity=.15;
+
+ }else{
+
+  scene.background.setHex(0x9dc5df);
+
+  ambientLight.intensity=.28;
+  hemiLight.intensity=.38;
+  sunLight.intensity=.5;
+ }
+
+ let light=
+  roomGroup.getObjectByName(
+   "ROOM_POINT_LIGHT"
+  );
+
+ if(light)
+  light.intensity=
+   nightMode?.7:1;
+
+ toast(
+  nightMode?
+  "🌙 الوضع الليلي":
+  "☀️ الوضع النهاري"
+ );
+}
+
+/* =========================================================
+ SPACE
+========================================================= */
+
+function changeSpaceType(type){
+
+ let settings={
+  bedroom:[12,10,4],
+  living:[14,11,4],
+  office:[10,9,4],
+  yard:[16,14,4],
+  roof:[16,14,4],
+  studio:[18,12,5]
+ };
+
+ let s=settings[type];
+
+ roomW=s[0];
+ roomD=s[1];
+ roomH=s[2];
+
+ document.getElementById("roomW").value=roomW;
+ document.getElementById("roomD").value=roomD;
+ document.getElementById("roomH").value=roomH;
+
+ createWorld();
+
+ toast("تم تغيير نوع المساحة");
+}
+
+function updateRoom(){
+
+ roomW=parseFloat(
+  document.getElementById("roomW").value
+ )||12;
+
+ roomD=parseFloat(
+  document.getElementById("roomD").value
+ )||10;
+
+ roomH=parseFloat(
+  document.getElementById("roomH").value
+ )||4;
+
+ roomW=Math.max(4,Math.min(40,roomW));
+ roomD=Math.max(4,Math.min(40,roomD));
+ roomH=Math.max(2,Math.min(15,roomH));
+
+ createWorld();
+
+ toast("تم تحديث أبعاد المكان");
+}
+
+function updateMaterials(){
+
+ wallMaterialType=
+  document.getElementById("wallMaterial").value;
+
+ floorMaterialType=
+  document.getElementById("floorMaterial").value;
+
+ createWorld();
+
+ toast("تم تحديث الخامات");
+}
+
+/* =========================================================
+ SMART DESIGN
+========================================================= */
+
+function smartDesign(){
+
+ furnitureGroup.clear();
+
+ let type=
+  document.getElementById("spaceType").value;
+
+ if(type==="bedroom"){
+
+  addFurniture("bed");
+  selectedObject.position.set(0,0,-2);
+
+  addFurniture("wardrobe");
+  selectedObject.position.set(-4,0,-3.5);
+
+  addFurniture("rug");
+  selectedObject.position.set(1,0,2);
+
+  addFurniture("lamp");
+  selectedObject.position.set(4,0,-2);
+
+ }else if(type==="living"){
+
+  addFurniture("sofa");
+  selectedObject.position.set(0,0,-2.5);
+
+  addFurniture("table");
+  selectedObject.position.set(0,0,.5);
+
+  addFurniture("tv");
+  selectedObject.position.set(0,0,-4);
+
+  addFurniture("plant");
+  selectedObject.position.set(4,0,2);
+
+  addFurniture("rug");
+  selectedObject.position.set(0,0,.5);
+
+ }else if(type==="office"){
+
+  addFurniture("desk");
+  selectedObject.position.set(0,0,-2);
+
+  addFurniture("chair");
+  selectedObject.position.set(0,0,0);
+
+  addFurniture("shelf");
+  selectedObject.position.set(-3,0,-3);
+
+  addFurniture("plant");
+  selectedObject.position.set(3,0,2);
+
+ }else{
+
+  addFurniture("outdoor");
+  selectedObject.position.set(0,0,1);
+
+  addFurniture("tree");
+  selectedObject.position.set(4,0,-3);
+
+  addFurniture("pergola");
+  selectedObject.position.set(-3,0,-2);
+ }
+
+ clearSelection();
+
+ toast("✨ تم إنشاء تصميم ذكي");
+}
+
+/* =========================================================
+ SAVE DATA
+========================================================= */
+
+function getProjectData(){
+
+ let objects=[];
+
+ furnitureGroup.children.forEach(o=>{
+
+  objects.push({
+   type:o.userData.type,
+   x:o.position.x,
+   y:o.position.y,
+   z:o.position.z,
+   rx:o.rotation.x,
+   ry:o.rotation.y,
+   rz:o.rotation.z,
+   sx:o.scale.x,
+   sy:o.scale.y,
+   sz:o.scale.z
+  });
+ });
+
+ return{
+  roomW,
+  roomD,
+  roomH,
+  wallMaterialType,
+  floorMaterialType,
+  ceilingVisible,
+  nightMode,
+  objects
+ };
+}
+
+function saveProject(){
+
+ localStorage.setItem(
+  "minecraftRealLifeProject",
+  JSON.stringify(
+   getProjectData()
+  )
+ );
+
+ toast("💾 تم حفظ التصميم");
+}
+
+function loadProject(){
+
+ let data=
+  localStorage.getItem(
+   "minecraftRealLifeProject"
+  );
+
+ if(!data){
+
+  toast("لا يوجد تصميم محفوظ");
+  return;
+ }
+
+ restoreProject(
+  JSON.parse(data)
+ );
+
+ toast("📂 تم تحميل التصميم");
+}
+
+function restoreProject(data){
+
+ roomW=data.roomW||12;
+ roomD=data.roomD||10;
+ roomH=data.roomH||4;
+
+ wallMaterialType=
+  data.wallMaterialType||"paint";
+
+ floorMaterialType=
+  data.floorMaterialType||"wood";
+
+ ceilingVisible=
+  data.ceilingVisible!==false;
+
+ nightMode=data.nightMode||false;
+
+ document.getElementById("roomW").value=roomW;
+ document.getElementById("roomD").value=roomD;
+ document.getElementById("roomH").value=roomH;
+
+ document.getElementById("wallMaterial").value=
+  wallMaterialType;
+
+ document.getElementById("floorMaterial").value=
+  floorMaterialType;
+
+ createWorld();
+
+ if(data.objects){
+
+  data.objects.forEach(item=>{
+
+   addFurniture(item.type);
+
+   let o=selectedObject;
+
+   if(o){
+
+    o.position.set(
+     item.x,
+     item.y,
+     item.z
+    );
+
+    o.rotation.set(
+     item.rx,
+     item.ry,
+     item.rz
+    );
+
+    o.scale.set(
+     item.sx,
+     item.sy,
+     item.sz
+    );
+   }
+  });
+ }
+
+ clearSelection();
+
+ let ceiling=
+  roomGroup.getObjectByName("CEILING");
+
+ if(ceiling)
+  ceiling.visible=ceilingVisible;
+}
+
+/* =========================================================
+ HISTORY
+========================================================= */
+
+function saveHistory(){
+
+ if(!furnitureGroup)return;
+
+ let data=JSON.stringify(
+  getProjectData()
+ );
+
+ history=history.slice(
+  0,
+  historyIndex+1
+ );
+
+ history.push(data);
+
+ if(history.length>30)
+  history.shift();
+ else
+  historyIndex++;
+}
+
+function undo(){
+
+ if(historyIndex<=0){
+
+  toast("لا يوجد تراجع");
+  return;
+ }
+
+ historyIndex--;
+
+ restoreProject(
+  JSON.parse(
+   history[historyIndex]
+  )
+ );
+
+ toast("↶ تم التراجع");
+}
+
+function redo(){
+
+ if(historyIndex>=history.length-1){
+
+  toast("لا يوجد إعادة");
+  return;
+ }
+
+ historyIndex++;
+
+ restoreProject(
+  JSON.parse(
+   history[historyIndex]
+  )
+ );
+
+ toast("↷ تمت الإعادة");
+}
+
+/* =========================================================
+ SCREENSHOT
+========================================================= */
+
+function takeScreenshot(){
+
+ renderer.render(
+  scene,
+  camera
+ );
+
+ let link=document.createElement("a");
+
+ link.download=
+  "minecraft-in-real-life.png";
+
+ link.href=
+  renderer.domElement.toDataURL(
+   "image/png"
+  );
+
+ link.click();
+
+ toast("📸 تم حفظ الصورة");
+}
+
+/* =========================================================
+ RESET
+========================================================= */
+
+function resetCamera(){
+
+ if(designMode)
+  setDesignMode();
+ else
+  setFirstPerson();
+}
+
+/* =========================================================
+ RESIZE
+========================================================= */
+
+function onResize(){
+
+ if(!renderer||!camera)return;
+
+ let w=window.innerWidth;
+ let h=window.innerHeight;
+
+ camera.aspect=w/h;
+ camera.updateProjectionMatrix();
+
+ renderer.setSize(
+  w,
+  h,
+  false
+ );
+}
+
+/* =========================================================
+ TOAST
+========================================================= */
+
+let toastTimer;
+
+function toast(msg){
+
+ let el=document.getElementById("toast");
+
+ el.textContent=msg;
+ el.classList.add("show");
+
+ clearTimeout(toastTimer);
+
+ toastTimer=setTimeout(()=>{
+  el.classList.remove("show");
+ },1900);
+}
+
+/* =========================================================
+ ANIMATION
+========================================================= */
+
+function animate(){
+
+ requestAnimationFrame(animate);
+
+ let dt=Math.min(
+  clock.getDelta(),
+  .05
+ );
+
+ updateFirstPerson(dt);
+
+ renderer.render(
+  scene,
+  camera
+ );
+}
+
+</script>
+
+</body>
+</html>
+```
